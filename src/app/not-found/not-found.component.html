@@ -1,0 +1,17 @@
+<div class="not-found-container">
+  <div class="content">
+    <mat-icon class="icon">search_off</mat-icon>
+    <h1>404</h1>
+    <h2>Oups, page introuvable</h2>
+    <p>La page que vous recherchez n'existe pas ou a été déplacée.</p>
+
+    <div class="actions">
+      <button mat-raised-button color="primary" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon> Retour
+      </button>
+      <button mat-raised-button color="accent" routerLink="/">
+        <mat-icon>home</mat-icon> Accueil
+      </button>
+    </div>
+  </div>
+</div>

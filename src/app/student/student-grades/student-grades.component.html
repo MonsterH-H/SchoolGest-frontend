@@ -1,0 +1,92 @@
+<div class="p-6 md:p-8 space-y-6">
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-800">Mes notes</h1>
+      <p class="text-slate-500 text-sm mt-1">Historique des évaluations publiées.</p>
+    </div>
+    <a routerLink="/student/dashboard" class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-slate-200 text-slate-700 text-sm font-medium hover:bg-slate-50">
+      Retour au dashboard
+    </a>
+  </div>
+
+  @if (isLoading()) {
+    <div class="bg-white border border-slate-200 rounded-xl p-8 text-center text-slate-500">
+      Chargement...
+    </div>
+  } @else if (grades().length === 0) {
+    <div class="bg-white border border-slate-200 rounded-xl p-10 text-center">
+      <p class="text-slate-700 font-semibold">Aucune note disponible</p>
+      <p class="text-slate-500 text-sm mt-1">Les notes apparaîtront ici dès qu’elles seront publiées.</p>
+    </div>
+  } @else {
+    <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+        <div class="text-sm text-slate-600">
+          {{ grades().length }} note(s)
+        </div>
+        <a routerLink="/profile" class="text-sm text-indigo-600 font-medium hover:underline">Mon profil</a>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left">
+          <thead class="bg-slate-50 border-b border-slate-200">
+            <tr>
+              <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Matière</th>
+              <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Type</th>
+              <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Statut</th>
+              <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Date</th>
+              <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase text-right">Note</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            @for (grade of grades(); track grade.id) {
+              <tr class="hover:bg-slate-50 transition-colors">
+                <td class="px-6 py-4">
+                  <div class="font-semibold text-slate-800">{{ grade.subjectName || grade.subject?.name || '--' }}</div>
+                  @if (grade.teacher) {
+                    <div class="text-xs text-slate-500">
+                      {{ (grade.teacher.user.firstName || grade.teacher.user.username) }} {{ grade.teacher.user.lastName || '' }}
+                    </div>
+                  }
+                </td>
+                <td class="px-6 py-4 text-sm text-slate-600">
+                  {{ grade.evaluationType }}
+                </td>
+                <td class="px-6 py-4">
+                  <span class="px-2 py-1 rounded-lg text-xs font-semibold"
+                    [class.bg-emerald-100]="grade.status === 'PUBLISHED'"
+                    [class.text-emerald-700]="grade.status === 'PUBLISHED'"
+                    [class.bg-slate-100]="grade.status !== 'PUBLISHED'"
+                    [class.text-slate-700]="grade.status !== 'PUBLISHED'">
+                    {{ grade.status }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-sm text-slate-600">
+                  {{ (grade.publishedAt || grade.createdAt) | date:'shortDate' }}
+                </td>
+                <td class="px-6 py-4 text-right">
+                  <div class="inline-flex items-center gap-3">
+                    <div class="w-24 bg-slate-100 rounded-full h-2 overflow-hidden">
+                      <div class="h-2 rounded-full"
+                        [class.bg-emerald-500]="getScorePercent(grade) >= 50"
+                        [class.bg-rose-500]="getScorePercent(grade) < 50"
+                        [style.width.%]="getScorePercent(grade)">
+                      </div>
+                    </div>
+                    <span class="px-2 py-1 rounded-lg text-sm font-bold"
+                      [class.bg-emerald-100]="getScorePercent(grade) >= 50"
+                      [class.text-emerald-700]="getScorePercent(grade) >= 50"
+                      [class.bg-rose-100]="getScorePercent(grade) < 50"
+                      [class.text-rose-700]="getScorePercent(grade) < 50">
+                      {{ getNoteLabel(grade) }}
+                    </span>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>

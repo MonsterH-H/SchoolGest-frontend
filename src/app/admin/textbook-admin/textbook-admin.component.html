@@ -1,0 +1,139 @@
+<div class="min-h-full bg-slate-50/50 p-4 lg:p-8 animate-fadeIn">
+    <!-- Header -->
+    <div class="mb-10">
+        <h1 class="text-4xl font-black text-slate-900 tracking-tighter mb-2">Cahier de Texte Numérique</h1>
+        <p class="text-slate-500 font-bold">Suivi institutionnel et archivage des séances pédagogiques</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Sidebar: Classes -->
+        <div class="lg:col-span-4 space-y-6">
+            <div class="bg-white rounded-[32px] border border-slate-100 shadow-sm p-6">
+                <h2 class="text-sm font-black text-slate-400 uppercase tracking-widest mb-6 px-2">Classes de
+                    l'établissement</h2>
+
+                <div class="space-y-2 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                    <button *ngFor="let classe of classes()" (click)="selectClasse(classe)"
+                        [class]="'w-full flex items-center justify-between p-4 rounded-2xl transition-all border-2 ' + 
+                    (selectedClasse()?.id === classe.id ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-100' : 'bg-slate-50 border-transparent hover:border-slate-200 text-slate-700')">
+                        <div class="text-left">
+                            <div class="font-black tracking-tight">{{ classe.name }}</div>
+                            <div
+                                [class]="'text-[10px] font-bold uppercase ' + (selectedClasse()?.id === classe.id ? 'text-indigo-100' : 'text-slate-400')">
+                                {{ classe.code }} • {{ classe.academicYear }}
+                            </div>
+                        </div>
+                        <svg class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Action Card -->
+            <div *ngIf="selectedClasse()" class="bg-rose-50 rounded-[32px] border border-rose-100 p-6 animate-fadeIn">
+                <div
+                    class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-rose-600 shadow-sm mb-4">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4">
+                        </path>
+                    </svg>
+                </div>
+                <h3 class="font-black text-rose-900 mb-2">Archivage Institutionnel</h3>
+                <p class="text-rose-700/70 text-sm font-bold leading-snug mb-6">
+                    L'archivage verrouille définitivement le cahier de texte pour l'année scolaire en cours.
+                </p>
+                <button (click)="archiveClassTextbook(selectedClasse()!)"
+                    class="w-full bg-rose-600 hover:bg-rose-700 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-rose-200 transition-all">
+                    Archiver {{ selectedClasse()?.name }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Main: Seances -->
+        <div class="lg:col-span-8">
+            <div *ngIf="!selectedClasse()"
+                class="h-full flex flex-col items-center justify-center bg-white rounded-[40px] border-2 border-dashed border-slate-100 p-12 text-center">
+                <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-6">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                        </path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-black text-slate-800 mb-2">Sélectionnez une classe</h3>
+                <p class="text-slate-400 font-bold max-w-sm">Choisissez une classe dans la liste pour consulter et
+                    administrer son cahier de texte.</p>
+            </div>
+
+            <div *ngIf="selectedClasse()" class="space-y-6 animate-fadeIn">
+                <div class="flex items-center justify-between px-2">
+                    <h2 class="text-2xl font-black text-slate-800">{{ selectedClasse()?.name }} <span
+                            class="text-slate-400 font-bold text-sm ml-2">({{ seances().length }} séances
+                            enregistrées)</span></h2>
+                </div>
+
+                <div *ngIf="isLoading()" class="py-20 flex justify-center">
+                    <div class="w-10 h-10 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin">
+                    </div>
+                </div>
+
+                <div *ngIf="!isLoading() && seances().length === 0"
+                    class="bg-white rounded-[32px] p-12 text-center border border-slate-100 shadow-sm">
+                    <p class="text-slate-400 font-bold">Aucune séance n'a été saisie pour cette classe.</p>
+                </div>
+
+                <div *ngIf="!isLoading() && seances().length > 0" class="space-y-4">
+                    <div *ngFor="let seance of seances()"
+                        class="bg-white rounded-[32px] border border-slate-100 shadow-sm p-6 hover:shadow-md transition-all">
+                        <div class="flex flex-col md:flex-row md:items-center gap-6">
+                            <div class="flex-shrink-0 w-24 text-center">
+                                <div class="text-sm font-black text-slate-400 uppercase tracking-widest">{{ seance.date
+                                    | date:'EEE' }}</div>
+                                <div class="text-2xl font-black text-slate-800">{{ seance.date | date:'dd' }}</div>
+                                <div class="text-xs font-bold text-slate-400">{{ seance.date | date:'MMM yyyy' }}</div>
+                            </div>
+
+                            <div class="flex-grow">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span
+                                        class="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[10px] font-black uppercase tracking-widest">
+                                        {{ seance.matiereNom || seance.matiereCode }}
+                                    </span>
+                                    <span class="text-slate-300">•</span>
+                                    <span class="text-xs font-bold text-slate-500">{{ seance.heureDebut }} - {{
+                                        seance.heureFin }}</span>
+                                </div>
+                                <h4 class="text-lg font-black text-slate-800 tracking-tight mb-2">{{ seance.objectifs ||
+                                    'Sujet non défini' }}</h4>
+                                <div class="flex items-center gap-2">
+                                    <div
+                                        class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-black text-slate-600">
+                                        {{ seance.enseignantNomComplet | slice:0:1 }}
+                                    </div>
+                                    <span class="text-xs font-bold text-slate-400">Par {{ seance.enseignantNomComplet
+                                        }}</span>
+                                </div>
+                            </div>
+
+                            <div class="flex md:flex-col gap-2">
+                                <button *ngIf="seance.fichierCloudUrl"
+                                    (click)="window.open(seance.fichierCloudUrl, '_blank')"
+                                    class="p-2 bg-slate-50 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                                    title="Voir support">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                        </path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

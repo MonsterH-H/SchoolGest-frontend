@@ -1,0 +1,33 @@
+<div class="confirm-dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <div class="flex items-center gap-3">
+      <div class="icon-container" [ngClass]="getIconClass()">
+        <mat-icon>{{ getIcon() }}</mat-icon>
+      </div>
+      <h2 class="dialog-title">{{ data.title }}</h2>
+    </div>
+    <button mat-icon-button (click)="onCancel()" aria-label="Fermer" class="close-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Content -->
+  <div class="dialog-content">
+    <p class="dialog-message">{{ data.message }}</p>
+  </div>
+
+  <!-- Actions -->
+  <div class="dialog-actions">
+    <button mat-stroked-button (click)="onCancel()" class="cancel-button">
+      {{ data.cancelText || 'Annuler' }}
+    </button>
+    <button mat-flat-button
+            color="primary"
+            (click)="onConfirm()"
+            class="confirm-button"
+            [ngClass]="getConfirmButtonClass()">
+      {{ data.confirmText || 'Confirmer' }}
+    </button>
+  </div>
+</div>

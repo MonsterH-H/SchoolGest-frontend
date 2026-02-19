@@ -1,0 +1,116 @@
+<div class="p-4 md:p-8 space-y-8 animate-in fade-in duration-700">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Travaux & Devoirs</h1>
+            <p class="text-slate-500 mt-1">Gérez la distribution des devoirs et la notation des rendus.</p>
+        </div>
+        <button (click)="showCreateModal.set(true)"
+            class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-2xl font-bold shadow-lg shadow-indigo-200 transition-all">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Nouveau Devoir
+        </button>
+    </div>
+
+    <!-- Assignments List -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Placeholder for existing assignments -->
+        <div *ngFor="let ass of assignments()"
+            class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all">
+            <div class="flex justify-between mb-4">
+                <span class="px-3 py-1 bg-amber-50 text-amber-600 rounded-full text-xs font-bold">{{ ass.dueDate |
+                    date:'mediumDate' }}</span>
+                <span class="text-xs text-slate-400 font-medium">Capacité: {{ ass.maxPoints }} pts</span>
+            </div>
+            <h3 class="font-bold text-slate-800 mb-2">{{ ass.title }}</h3>
+            <p class="text-sm text-slate-500 mb-6 line-clamp-2">{{ ass.description }}</p>
+
+            <button (click)="viewSubmissions(ass.id)"
+                class="w-full py-2 bg-indigo-50 text-indigo-600 font-bold rounded-xl hover:bg-indigo-600 hover:text-white transition-all">
+                Voir les Rendus ({{ ass.submissionCount || 0 }})
+            </button>
+        </div>
+
+        <div *ngIf="assignments().length === 0"
+            class="col-span-full py-20 text-center bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-200">
+            <p class="text-slate-400 font-medium">Aucun devoir publié. Cliquez sur "Nouveau Devoir" pour commencer.</p>
+        </div>
+    </div>
+
+    <!-- Create Modal -->
+    <div *ngIf="showCreateModal()" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" (click)="showCreateModal.set(false)"></div>
+        <div class="relative bg-white w-full max-w-xl rounded-3xl shadow-2xl animate-in zoom-in-95 duration-300">
+            <div class="p-6 border-b border-slate-50 flex justify-between items-center">
+                <h2 class="text-xl font-bold text-slate-800">Publier un nouveau devoir</h2>
+                <button (click)="showCreateModal.set(false)" class="p-2 hover:bg-slate-100 rounded-full transition-all">
+                    <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <form [formGroup]="assignmentForm" (ngSubmit)="createAssignment()" class="p-6 space-y-6">
+                <div class="space-y-4">
+                    <div class="space-y-1">
+                        <label class="text-sm font-bold text-slate-700 ml-1">Titre</label>
+                        <input type="text" formControlName="title" placeholder="TP n°1 : Algèbre Linéaire"
+                            class="w-full bg-slate-50 border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 transition-all outline-none">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <select formControlName="classeId"
+                            class="w-full bg-slate-50 border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500">
+                            <option [ngValue]="null">Classe</option>
+                            <option *ngFor="let c of classes()" [ngValue]="c.id">{{ c.name }}</option>
+                        </select>
+                        <select formControlName="subjectId"
+                            class="w-full bg-slate-50 border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500">
+                            <option [ngValue]="null">Matière</option>
+                            <option *ngFor="let s of subjects()" [ngValue]="s.id">{{ s.name }}</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-slate-500 ml-1">Date d'échéance</label>
+                            <input type="datetime-local" formControlName="dueDate"
+                                class="w-full bg-slate-50 border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 transition-all outline-none">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-slate-500 ml-1">Note Max</label>
+                            <input type="number" formControlName="maxPoints"
+                                class="w-full bg-slate-50 border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 transition-all outline-none">
+                        </div>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-sm font-bold text-slate-700 ml-1">Instructions</label>
+                        <textarea formControlName="description" rows="3" placeholder="Détails du travail à effectuer..."
+                            class="w-full bg-slate-50 border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 transition-all outline-none"></textarea>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-sm font-bold text-slate-700 ml-1">Fichier Joint (PDF/ZIP)</label>
+                        <input type="file" (change)="onFileSelected($event)"
+                            class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                    </div>
+                </div>
+
+                <div class="pt-4 flex gap-3">
+                    <button type="button" (click)="showCreateModal.set(false)"
+                        class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-all">
+                        Annuler
+                    </button>
+                    <button type="submit" [disabled]="assignmentForm.invalid || isSaving()"
+                        class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl shadow-lg transition-all disabled:opacity-50">
+                        {{ isSaving() ? 'Publication...' : 'Publier' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,4 @@
+<button class="theme-switcher" (click)="toggleTheme()">
+  <mat-icon>{{ theme() === 'dark' ? 'dark_mode' : 'light_mode' }}</mat-icon>
+  <span>{{ theme() === 'dark' ? 'Mode sombre' : 'Mode clair' }}</span>
+</button>

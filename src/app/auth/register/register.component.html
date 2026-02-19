@@ -1,0 +1,282 @@
+<div class="min-h-screen flex selection:bg-indigo-100 selection:text-indigo-900">
+  <!-- Section Gauche - Branding Premium (Identique Login) -->
+  <div class="hidden lg:flex lg:w-2/5 bg-[#0F172A] relative overflow-hidden">
+    <!-- Fond Animé / Dégradés -->
+    <div class="absolute inset-0 z-0">
+      <div
+        class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/20 rounded-full blur-[120px] animate-pulse">
+      </div>
+      <div
+        class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/20 rounded-full blur-[120px] animate-pulse"
+        style="animation-delay: 2s"></div>
+      <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03]">
+      </div>
+    </div>
+
+    <!-- Contenu Branding -->
+    <div class="relative z-10 flex flex-col justify-between p-12 w-full h-full">
+      <div>
+        <div class="flex items-center gap-3 mb-12">
+          <div
+            class="w-10 h-10 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center border border-white/10 shadow-xl">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+              </path>
+            </svg>
+          </div>
+          <span class="text-xl font-black text-white tracking-tight uppercase">SchoolGest <span
+              class="text-indigo-400">Pro</span></span>
+        </div>
+
+        <div class="max-w-md">
+          <h1 class="text-4xl font-black text-white leading-tight mb-6">
+            Rejoignez <span
+              class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">l'élite</span>
+            de l'éducation.
+          </h1>
+          <p class="text-slate-400 text-lg leading-relaxed mb-8">
+            Créez votre compte pour accéder à une plateforme de gestion scolaire nouvelle génération.
+          </p>
+
+          <!-- Feature List -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-4 group">
+              <div
+                class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center border border-white/10 group-hover:bg-indigo-500/20 transition-colors">
+                <i class="material-icons text-indigo-400 text-[20px]">verified</i>
+              </div>
+              <div>
+                <h4 class="text-white font-bold text-sm">Validé par le Backend</h4>
+                <p class="text-slate-500 text-xs">Données synchronisées en temps réel.</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-4 group">
+              <div
+                class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center border border-white/10 group-hover:bg-purple-500/20 transition-colors">
+                <i class="material-icons text-purple-400 text-[20px]">lock</i>
+              </div>
+              <div>
+                <h4 class="text-white font-bold text-sm">Sécurité Maximale</h4>
+                <p class="text-slate-500 text-xs">Chiffrement et protection des données.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-6 text-slate-500 text-xs font-bold">
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Formulaire -->
+  <div class="flex-1 bg-white p-6 md:p-12 flex flex-col justify-center items-center overflow-y-auto relative">
+    <!-- Cercles décoratifs mobiles -->
+    <div class="lg:hidden absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-[80px] -z-10"></div>
+    <div class="lg:hidden absolute bottom-0 left-0 w-64 h-64 bg-purple-50 rounded-full blur-[80px] -z-10"></div>
+
+    <div class="w-full max-w-xl">
+      <!-- Header Meta -->
+      <div class="flex items-center justify-between mb-12">
+        <div>
+          <h1 class="text-3xl font-black text-slate-900 tracking-tight mb-2">Inscription</h1>
+          <p class="text-slate-500 font-bold text-sm tracking-wide uppercase">Étape {{ currentStep }} sur 2</p>
+        </div>
+        <!-- Progress Dots -->
+        <div class="flex gap-2">
+          <div
+            [class]="'w-10 h-2.5 rounded-full transition-all duration-500 ' + (currentStep === 1 ? 'bg-slate-900' : 'bg-slate-100')">
+          </div>
+          <div
+            [class]="'w-10 h-2.5 rounded-full transition-all duration-500 ' + (currentStep === 2 ? 'bg-slate-900' : 'bg-slate-100')">
+          </div>
+        </div>
+      </div>
+
+      <!-- Étape 1 : Informations de Compte -->
+      <div *ngIf="currentStep === 1" [@stepAnimation]>
+        <form [formGroup]="accountForm" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-1.5 group">
+              <label
+                class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Identifiant</label>
+              <input type="text" formControlName="username" placeholder="j.doe"
+                class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-50 rounded-2xl font-bold focus:bg-white focus:border-indigo-600/20 focus:ring-4 focus:ring-indigo-600/5 transition-all outline-none"
+                [class.border-rose-500]="accountForm.get('username')?.invalid && accountForm.get('username')?.touched">
+            </div>
+            <div class="space-y-1.5 group">
+              <label
+                class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Email</label>
+              <input type="email" formControlName="email" placeholder="jean@ecole.com"
+                class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-50 rounded-2xl font-bold focus:bg-white focus:border-indigo-600/20 focus:ring-4 focus:ring-indigo-600/5 transition-all outline-none"
+                [class.border-rose-500]="accountForm.get('email')?.invalid && accountForm.get('email')?.touched">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-1.5 group">
+              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Mot de
+                passe</label>
+              <div class="relative">
+                <input [type]="hidePassword ? 'password' : 'text'" formControlName="password" placeholder="••••••••"
+                  class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-50 rounded-2xl font-bold focus:bg-white focus:border-indigo-600/20 focus:ring-4 focus:ring-indigo-600/5 transition-all outline-none"
+                  [class.border-rose-500]="accountForm.get('password')?.invalid && accountForm.get('password')?.touched">
+                <button type="button" (click)="hidePassword = !hidePassword"
+                  class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors">
+                  <i class="material-icons text-[20px]">{{ hidePassword ? 'visibility_off' : 'visibility' }}</i>
+                </button>
+              </div>
+              <!-- Strength Indicator -->
+              <div class="flex gap-1.5 mt-2.5 px-1">
+                <div
+                  [class]="'h-1.5 flex-1 rounded-full transition-all ' + (passwordStrength >= 25 ? 'bg-emerald-500' : 'bg-slate-100')">
+                </div>
+                <div
+                  [class]="'h-1.5 flex-1 rounded-full transition-all ' + (passwordStrength >= 50 ? 'bg-emerald-500' : 'bg-slate-100')">
+                </div>
+                <div
+                  [class]="'h-1.5 flex-1 rounded-full transition-all ' + (passwordStrength >= 75 ? 'bg-emerald-500' : 'bg-slate-100')">
+                </div>
+                <div
+                  [class]="'h-1.5 flex-1 rounded-full transition-all ' + (passwordStrength === 100 ? 'bg-emerald-500' : 'bg-slate-100')">
+                </div>
+              </div>
+            </div>
+            <div class="space-y-1.5 group">
+              <label
+                class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Confirmation</label>
+              <input type="password" formControlName="confirmPassword" placeholder="••••••••"
+                class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-50 rounded-2xl font-bold focus:bg-white focus:border-indigo-600/20 focus:ring-4 focus:ring-indigo-600/5 transition-all outline-none"
+                [class.border-rose-500]="accountForm.hasError('passwordMismatch') && accountForm.get('confirmPassword')?.touched">
+            </div>
+          </div>
+
+          <button type="button" (click)="nextStep()" [disabled]="accountForm.invalid"
+            class="w-full py-4.5 bg-slate-900 text-white rounded-3xl font-black uppercase tracking-widest shadow-2xl shadow-slate-200 hover:bg-black transition-all active:scale-[0.98] disabled:opacity-50">
+            Étape Suivante
+          </button>
+        </form>
+      </div>
+
+      <!-- Étape 2 : Profil Spécifique -->
+      <div *ngIf="currentStep === 2" [@stepAnimation]>
+        <form [formGroup]="profileForm" (ngSubmit)="onRegister()" class="space-y-6">
+          <!-- Photo & Rôle -->
+          <div class="flex flex-col md:flex-row items-center gap-8 mb-8">
+            <div class="relative group">
+              <div
+                class="w-28 h-28 rounded-[2.5rem] bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden group-hover:border-indigo-500 transition-colors shadow-inner">
+                <img *ngIf="photoPreview" [src]="photoPreview" class="w-full h-full object-cover">
+                <i *ngIf="!photoPreview" class="material-icons text-slate-300 text-4xl">face</i>
+              </div>
+              <input type="file" (change)="onFileSelected($event)" accept="image/*"
+                class="absolute inset-0 opacity-0 cursor-pointer">
+              <div
+                class="absolute -bottom-2 -right-2 bg-slate-900 text-white w-9 h-9 rounded-2xl flex items-center justify-center shadow-xl">
+                <i class="material-icons text-[18px]">add_a_photo</i>
+              </div>
+            </div>
+
+            <div class="flex-1 w-full space-y-1.5">
+              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Type de compte</label>
+              <div class="flex gap-3">
+                <button type="button" (click)="profileForm.get('role')?.setValue(Role.ETUDIANT)"
+                  [class]="'flex-1 py-4 rounded-2xl font-black uppercase text-[11px] tracking-widest transition-all ' + (profileForm.get('role')?.value === Role.ETUDIANT ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'bg-slate-50 text-slate-400 hover:bg-slate-100')">
+                  Étudiant
+                </button>
+                <button type="button" (click)="profileForm.get('role')?.setValue(Role.ENSEIGNANT)"
+                  [class]="'flex-1 py-4 rounded-2xl font-black uppercase text-[11px] tracking-widest transition-all ' + (profileForm.get('role')?.value === Role.ENSEIGNANT ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'bg-slate-50 text-slate-400 hover:bg-slate-100')">
+                  Enseignant
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-1.5">
+              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Prénom</label>
+              <input type="text" formControlName="firstName" placeholder="Jean"
+                class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-50 rounded-2xl font-bold focus:bg-white focus:border-indigo-600/20 transition-all outline-none">
+            </div>
+            <div class="space-y-1.5">
+              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nom</label>
+              <input type="text" formControlName="lastName" placeholder="Dupont"
+                class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-50 rounded-2xl font-bold focus:bg-white focus:border-indigo-600/20 transition-all outline-none">
+            </div>
+          </div>
+
+          <!-- Champs dynamiques Étudiant -->
+          <div *ngIf="profileForm.get('role')?.value === Role.ETUDIANT"
+            class="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fadeIn">
+            <div class="space-y-1.5">
+              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Naissance</label>
+              <input type="date" formControlName="birthDate"
+                class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-50 rounded-2xl font-bold focus:bg-white focus:border-indigo-600/20 transition-all outline-none">
+            </div>
+            <div class="space-y-1.5">
+              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Genre</label>
+              <select formControlName="gender"
+                class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-50 rounded-2xl font-bold focus:bg-white focus:border-indigo-600/20 transition-all outline-none appearance-none">
+                <option [value]="Gender.M">Masculin</option>
+                <option [value]="Gender.F">Féminin</option>
+                <option [value]="Gender.AUTRE">Autre</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Champs dynamiques Enseignant -->
+          <div *ngIf="profileForm.get('role')?.value === Role.ENSEIGNANT" class="animate-fadeIn">
+            <div class="space-y-1.5">
+              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Date
+                d'embauche</label>
+              <input type="date" formControlName="hireDate"
+                class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-50 rounded-2xl font-bold focus:bg-white focus:border-indigo-600/20 transition-all outline-none">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-1.5">
+              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Téléphone</label>
+              <input type="tel" formControlName="phone" placeholder="+221 ..."
+                class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-50 rounded-2xl font-bold focus:bg-white focus:border-indigo-600/20 transition-all outline-none">
+            </div>
+            <div class="space-y-1.5">
+              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Matricule
+                (Optionnel)</label>
+              <input type="text" formControlName="userCode" placeholder="Géré par l'école"
+                class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-50 rounded-2xl font-bold focus:bg-white focus:border-indigo-600/20 transition-all outline-none">
+            </div>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Adresse de
+              résidence</label>
+            <input type="text" formControlName="address" placeholder="Cité Keur Gorgui, Villa 12"
+              class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-50 rounded-2xl font-bold focus:bg-white focus:border-indigo-600/20 transition-all outline-none">
+          </div>
+
+          <div class="flex gap-4 pt-4">
+            <button type="button" (click)="prevStep()"
+              class="flex-1 py-4.5 bg-slate-100 text-slate-600 rounded-[2rem] font-black uppercase tracking-widest hover:bg-slate-200 transition-all">
+              Précédent
+            </button>
+            <button type="submit" [disabled]="profileForm.invalid || isLoading"
+              class="flex-[2] py-4.5 bg-indigo-600 text-white rounded-[2rem] font-black uppercase tracking-widest shadow-2xl shadow-indigo-100 hover:bg-indigo-700 transition-all disabled:opacity-50 flex justify-center items-center gap-3">
+              <div *ngIf="isLoading" class="w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin">
+              </div>
+              <span>{{ isLoading ? 'Création...' : 'Finaliser mon profil' }}</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="text-center mt-12 flex flex-col items-center gap-2">
+        <p class="text-slate-500 font-bold">Déjà inscrit sur SchoolGest ?</p>
+        <a routerLink="/login"
+          class="text-indigo-600 font-black uppercase text-xs tracking-widest hover:text-indigo-800 transition-all decoration-2 underline-offset-4 hover:underline">Accéder
+          à la connexion</a>
+      </div>
+    </div>
+  </div>
+</div>

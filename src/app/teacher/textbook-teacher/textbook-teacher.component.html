@@ -1,0 +1,165 @@
+<div class="p-4 md:p-8 space-y-8 animate-in slide-in-from-bottom duration-700">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Cahier de Texte</h1>
+            <p class="text-slate-500 mt-1">Consignez vos séances pédagogiques et devoirs à la maison.</p>
+        </div>
+        <button (click)="openAddModal()"
+            class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-2xl font-bold shadow-lg shadow-indigo-200 transition-all">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Nouvelle Séance
+        </button>
+    </div>
+
+    <!-- Seances List -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (seance of seances(); track seance.id) {
+        <div
+            class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
+            <div class="flex justify-between items-start mb-4">
+                <div
+                    class="p-2 bg-indigo-50 text-indigo-600 rounded-xl group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.168 0.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332 0.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.168 0.477-4.5 1.253" />
+                    </svg>
+                </div>
+                <span class="text-xs font-bold text-indigo-500 bg-indigo-50 px-3 py-1 rounded-full">{{ seance.date |
+                    date:'dd/MM/yyyy' }}</span>
+            </div>
+
+            <h3 class="text-lg font-bold text-slate-800 mb-1">{{ seance.title }}</h3>
+            <p class="text-sm text-slate-500 mb-4 line-clamp-2">{{ seance.description }}</p>
+
+            <div class="space-y-3 pt-4 border-t border-slate-50">
+                <div class="flex items-center gap-2 text-sm text-slate-600">
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                    <span class="font-medium text-slate-800">{{ seance.classeName }}</span>
+                </div>
+                <div class="flex items-center gap-2 text-sm text-slate-600">
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{{ seance.startTime }} - {{ seance.endTime }}</span>
+                </div>
+            </div>
+        </div>
+        }
+
+        <!-- Empty State -->
+        @if (seances().length === 0 && !isLoading()) {
+        <div
+            class="col-span-full py-20 bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center text-slate-400">
+            <svg class="w-16 h-16 mb-4 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <p class="text-lg font-medium">Aucune séance consignée pour le moment.</p>
+            <button type="button" (click)="openAddModal()"
+                class="mt-4 text-indigo-600 font-bold hover:underline">Consigner ma
+                première séance</button>
+        </div>
+        }
+    </div>
+
+    <!-- Modal -->
+    @if (showModal()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <button type="button" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300"
+            (click)="showModal.set(false)" aria-label="Fermer"></button>
+        <div
+            class="relative bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+            <div class="p-6 border-b border-slate-50 flex justify-between items-center">
+                <h2 class="text-xl font-bold text-slate-800">Ajouter une séance</h2>
+                <button type="button" (click)="showModal.set(false)"
+                    class="p-2 hover:bg-slate-100 rounded-full transition-all">
+                    <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <form [formGroup]="seanceForm" (ngSubmit)="onSubmit()" class="p-6 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2 col-span-full">
+                        <label for="seance-title" class="text-sm font-bold text-slate-700 ml-1">Titre de la
+                            séance</label>
+                        <input id="seance-title" type="text" formControlName="title"
+                            placeholder="Ex: Introduction aux Algos"
+                            class="w-full bg-slate-50 border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 transition-all outline-none">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="seance-classe" class="text-sm font-bold text-slate-700 ml-1">Classe</label>
+                        <select id="seance-classe" formControlName="classeId"
+                            (change)="onClasseChange(+($any($event.target).value))"
+                            class="w-full bg-slate-50 border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 transition-all outline-none">
+                            <option [ngValue]="null">-- Choisir --</option>
+                            @for (c of classes(); track c.id) {
+                            <option [ngValue]="c.id">{{ c.name }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="seance-subject" class="text-sm font-bold text-slate-700 ml-1">Matière</label>
+                        <select id="seance-subject" formControlName="subjectId"
+                            class="w-full bg-slate-50 border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 transition-all outline-none">
+                            <option [ngValue]="null">-- Choisir --</option>
+                            @for (s of subjects(); track s.id) {
+                            <option [ngValue]="s.id">{{ s.name }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="seance-date" class="text-sm font-bold text-slate-700 ml-1">Date</label>
+                        <input id="seance-date" type="date" formControlName="date"
+                            class="w-full bg-slate-50 border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 transition-all outline-none">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="space-y-2">
+                            <label for="seance-startTime" class="text-xs font-bold text-slate-500 ml-1">Début</label>
+                            <input id="seance-startTime" type="time" formControlName="startTime"
+                                class="w-full bg-slate-50 border-none rounded-2xl px-3 py-3 focus:ring-2 focus:ring-indigo-500 transition-all outline-none">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="seance-endTime" class="text-xs font-bold text-slate-500 ml-1">Fin</label>
+                            <input id="seance-endTime" type="time" formControlName="endTime"
+                                class="w-full bg-slate-50 border-none rounded-2xl px-3 py-3 focus:ring-2 focus:ring-indigo-500 transition-all outline-none">
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 col-span-full">
+                        <label for="seance-description" class="text-sm font-bold text-slate-700 ml-1">Objectifs /
+                            Contenu</label>
+                        <textarea formControlName="description" rows="3" id="seance-description"
+                            placeholder="Qu'avez-vous abordé durant cette séance ?"
+                            class="w-full bg-slate-50 border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 transition-all outline-none"></textarea>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-50 flex gap-3">
+                    <button type="button" (click)="showModal.set(false)"
+                        class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-all">
+                        Annuler
+                    </button>
+                    <button type="submit" [disabled]="seanceForm.invalid || isSaving()"
+                        class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl shadow-lg shadow-indigo-200 transition-all disabled:opacity-50">
+                        {{ isSaving() ? 'Enregistrement...' : 'Enregistrer' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    }
+</div>

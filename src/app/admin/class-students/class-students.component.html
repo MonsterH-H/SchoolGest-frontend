@@ -1,0 +1,80 @@
+<div class="container mx-auto p-4">
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold">
+      Étudiants de la classe : {{ classe()?.name || 'Chargement...' }}
+    </h1>
+    <button (click)="openEnrollModal()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      Inscrire un étudiant
+    </button>
+  </div>
+
+  <div *ngIf="isLoading()" class="text-center">
+    <p>Chargement des étudiants...</p>
+  </div>
+
+  <div *ngIf="!isLoading() && students().length > 0">
+    <table class="min-w-full bg-white shadow-md rounded-lg">
+      <thead>
+        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+          <th class="py-3 px-6 text-left">Nom & Prénom</th>
+          <th class="py-3 px-6 text-left">Email</th>
+          <th class="py-3 px-6 text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="text-gray-600 text-sm font-light">
+        <tr *ngFor="let student of students()" class="border-b border-gray-200 hover:bg-gray-100">
+          <td class="py-3 px-6 text-left whitespace-nowrap">{{ student.name }}</td>
+          <td class="py-3 px-6 text-left">{{ student.email }}</td>
+          <td class="py-3 px-6 text-center">
+            <button (click)="unenrollStudent(student.id)" class="text-red-500 hover:text-red-700">
+              Désinscrire
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!isLoading() && students().length === 0" class="text-center text-gray-500 mt-8">
+    <p>Aucun étudiant n'est inscrit dans cette classe pour le moment.</p>
+  </div>
+</div>
+
+<!-- Enroll Student Modal -->
+<div *ngIf="showEnrollModal()" class="fixed inset-0 bg-black bg-opacity-50 z-40 flex justify-center items-center">
+  <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-lg">
+    <h2 class="text-xl font-bold mb-4">Inscrire un nouvel étudiant</h2>
+    
+    <div class="mb-4">
+      <input 
+        type="text" 
+        placeholder="Rechercher par nom ou email..." 
+        class="w-full p-2 border rounded"
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event); searchPotentialStudents()">
+    </div>
+
+    <div *ngIf="isSearching()" class="text-center">
+      <p>Recherche en cours...</p>
+    </div>
+
+    <ul *ngIf="!isSearching() && potentialStudents().length > 0" class="max-h-64 overflow-y-auto">
+      <li *ngFor="let student of potentialStudents()" class="flex justify-between items-center p-2 border-b">
+        <span>{{ student.lastName }} {{ student.firstName }} ({{ student.email }})</span>
+        <button (click)="enrollStudent(student.id)" class="bg-green-500 text-white px-3 py-1 rounded text-sm">
+          Inscrire
+        </button>
+      </li>
+    </ul>
+
+    <div *ngIf="!isSearching() && potentialStudents().length === 0" class="text-gray-500 text-center">
+      <p>Aucun étudiant trouvé ou tous les étudiants correspondants sont déjà inscrits.</p>
+    </div>
+
+    <div class="mt-6 text-right">
+      <button (click)="showEnrollModal.set(false)" class="bg-gray-300 hover:bg-gray-400 text-black py-2 px-4 rounded">
+        Fermer
+      </button>
+    </div>
+  </div>
+</div>

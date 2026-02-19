@@ -1,0 +1,20 @@
+<!-- En-tête de l'application -->
+<header class="h-14 md:h-16 bg-card border-b border-border-color flex items-center justify-between px-4 sm:px-6">
+  
+  <!-- Côté gauche : Bouton de bascule + Titre -->
+  <div class="flex items-center flex-1 min-w-0">
+    <!-- Bouton menu mobile -->
+    <button (click)="toggleSidebar()"
+            class="p-1 rounded-md text-gray-500 transition-colors md:hidden flex-shrink-0">
+      <span class="material-icons">menu</span>
+    </button>
+  </div>
+
+  <!-- Côté droit : sélecteur de langue + menu utilisateur -->
+  <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+    <!-- Sélecteur de langue -->
+
+    <!-- Menu utilisateur -->
+    <app-user-menu></app-user-menu>
+  </div>
+</header>

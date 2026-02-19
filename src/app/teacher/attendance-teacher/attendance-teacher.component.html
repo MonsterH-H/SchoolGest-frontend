@@ -1,0 +1,197 @@
+<div class="p-6 md:p-10 space-y-10 min-h-screen bg-slate-50/20">
+
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div class="space-y-1">
+            <h1 class="text-4xl font-black text-slate-900 tracking-tight">Gestion des Présences</h1>
+            <p class="text-slate-500 font-medium text-lg">Gérez les absences, retards et validez les justificatifs
+                d'absence.</p>
+        </div>
+        <button (click)="saveAttendance()" [disabled]="isSaving() || students().length === 0"
+            class="flex items-center gap-3 px-8 py-4 bg-indigo-600 text-white rounded-2xl hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-200 cursor-pointer font-bold active:scale-95 disabled:opacity-50 disabled:scale-100">
+            <i *ngIf="!isSaving()" class="material-icons">check_circle</i>
+            <div *ngIf="isSaving()" class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin">
+            </div>
+            <span>Enregistrer l'Appel</span>
+        </button>
+    </div>
+
+    <!-- Filters & Search Toolbar -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div
+            class="lg:col-span-2 bg-white/70 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white shadow-sm flex flex-col md:flex-row gap-6 items-center">
+            <div class="w-full md:w-1/3 space-y-2">
+                <label class="text-[10px] uppercase font-black text-slate-400 tracking-widest ml-2">Classe</label>
+                <select (change)="onClasseChange(+($any($event.target).value))"
+                    class="w-full bg-slate-100/50 border-2 border-transparent rounded-2xl px-5 py-3 text-slate-700 focus:border-indigo-500 focus:bg-white transition-all outline-none font-bold">
+                    <option value="">-- Choisir une classe --</option>
+                    <option *ngFor="let c of classes()" [value]="c.id">{{ c.name }}</option>
+                </select>
+            </div>
+            <div class="w-full md:w-1/3 space-y-2">
+                <label class="text-[10px] uppercase font-black text-slate-400 tracking-widest ml-2">Séance</label>
+                <select [ngModel]="selectedPlanningId()" (ngModelChange)="selectedPlanningId.set($event)"
+                    class="w-full bg-slate-100/50 border-2 border-transparent rounded-2xl px-5 py-3 text-slate-700 focus:border-indigo-500 focus:bg-white transition-all outline-none font-bold">
+                    <option [ngValue]="null">-- Choisir une séance --</option>
+                    <option *ngFor="let p of plannings()" [ngValue]="p.id">
+                        {{ p.subjectName }} ({{ p.timeSlotLabel }})
+                    </option>
+                </select>
+            </div>
+            <div class="w-full md:w-1/3 space-y-2">
+                <label class="text-[10px] uppercase font-black text-slate-400 tracking-widest ml-2">Rechercher</label>
+                <div class="relative">
+                    <i class="material-icons absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</i>
+                    <input type="text" (input)="searchTerm.set($any($event.target).value)"
+                        placeholder="Rechercher un étudiant..."
+                        class="w-full bg-slate-100/50 border-2 border-transparent rounded-2xl pl-12 pr-5 py-3 text-slate-700 focus:border-indigo-500 focus:bg-white transition-all outline-none font-bold">
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary / Stats Mini-Card -->
+        <div
+            class="bg-indigo-600 rounded-[2.5rem] p-8 text-white shadow-xl shadow-indigo-100 flex items-center justify-between overflow-hidden relative group">
+            <div class="relative z-10">
+                <p class="text-indigo-100 text-xs font-black uppercase tracking-widest mb-1">Effectif Présent</p>
+                <h3 class="text-4xl font-black">{{ students().length }} Étudiants</h3>
+            </div>
+            <i
+                class="material-icons text-7xl text-white/10 absolute -right-2 -bottom-2 rotate-12 group-hover:rotate-0 transition-transform duration-700">groups</i>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+
+        <!-- Student Selection List -->
+        <div class="lg:col-span-2 space-y-4">
+            <div *ngFor="let student of filteredStudents()" (click)="selectStudent(student)"
+                [class.ring-2]="selectedStudent()?.id === student.id"
+                [class.ring-indigo-500]="selectedStudent()?.id === student.id"
+                class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-6">
+
+                <div class="flex items-center gap-6">
+                    <div
+                        class="w-16 h-16 rounded-3xl bg-slate-50 flex items-center justify-center text-indigo-600 font-black text-xl group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500 shadow-inner">
+                        {{ student.name[0] }}{{ student.name.split(' ')[1] ? student.name.split(' ')[1][0] : '' }}
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-black text-slate-800 group-hover:text-indigo-600 transition-colors">{{
+                            student.name }}</h4>
+                        <p class="text-slate-400 font-bold text-sm tracking-wide">{{ student.email }}</p>
+                        <p class="text-[10px] font-black text-slate-300 uppercase mt-1">{{ student.studentNumber }}</p>
+                    </div>
+                </div>
+
+                <!-- Quick Marking Controls -->
+                <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-2xl" (click)="$event.stopPropagation()">
+                    <button (click)="updateStatus(student.id, 'PRESENT')"
+                        [class]="attendanceMap.get(student.id)?.status === 'PRESENT' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-100' : 'text-slate-400 hover:text-emerald-600'"
+                        class="w-12 h-12 flex items-center justify-center rounded-xl transition-all font-black text-xs uppercase tracking-tighter">
+                        <i class="material-icons">check</i>
+                    </button>
+                    <button (click)="updateStatus(student.id, 'ABSENT')"
+                        [class]="attendanceMap.get(student.id)?.status === 'ABSENT' ? 'bg-rose-500 text-white shadow-lg shadow-rose-100' : 'text-slate-400 hover:text-rose-600'"
+                        class="w-12 h-12 flex items-center justify-center rounded-xl transition-all font-black text-xs uppercase tracking-tighter">
+                        <i class="material-icons">close</i>
+                    </button>
+                    <button (click)="updateStatus(student.id, 'RETARD')"
+                        [class]="attendanceMap.get(student.id)?.status === 'RETARD' ? 'bg-amber-500 text-white shadow-lg shadow-amber-100' : 'text-slate-400 hover:text-amber-600'"
+                        class="w-12 h-12 flex items-center justify-center rounded-xl transition-all font-black text-xs uppercase tracking-tighter">
+                        <i class="material-icons">schedule</i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div *ngIf="filteredStudents().length === 0"
+                class="bg-white/40 border-2 border-dashed border-slate-200 rounded-[3rem] p-20 text-center space-y-4">
+                <i class="material-icons text-6xl text-slate-200">person_search</i>
+                <p class="text-xl font-black text-slate-400 italic">Aucun étudiant ne correspond à votre recherche</p>
+            </div>
+        </div>
+
+        <!-- Student Detail & History Sidebar -->
+        <div class="space-y-8">
+            <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-2xl p-8 sticky top-28 overflow-hidden">
+                <div *ngIf="!selectedStudent()"
+                    class="flex flex-col items-center justify-center py-20 text-center gap-4 opacity-40">
+                    <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center">
+                        <i class="material-icons text-4xl text-slate-300">touch_app</i>
+                    </div>
+                    <p class="font-black text-slate-400 uppercase tracking-widest text-sm">Cliquez sur un
+                        étudiant<br>pour voir son historique</p>
+                </div>
+
+                <div *ngIf="selectedStudent()" class="animate-in slide-in-from-right-10 duration-500 space-y-8">
+                    <!-- Profile Header -->
+                    <div class="flex items-center gap-4 border-b border-slate-50 pb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black uppercase">
+                            {{ selectedStudent()?.name?.[0] }}
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-black text-slate-900">{{ selectedStudent()?.name }}</h3>
+                            <p class="text-xs font-bold text-slate-500">{{ selectedStudent()?.email }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Stats Row -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-rose-50 p-4 rounded-2xl text-center">
+                            <span class="block text-2xl font-black text-rose-600">{{ studentStats()?.absences || 0
+                                }}</span>
+                            <span
+                                class="text-[10px] uppercase font-black text-rose-700/50 tracking-widest">Absences</span>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-2xl text-center">
+                            <span class="block text-2xl font-black text-amber-600">{{ studentStats()?.retards || 0
+                                }}</span>
+                            <span
+                                class="text-[10px] uppercase font-black text-amber-700/50 tracking-widest">Retards</span>
+                        </div>
+                    </div>
+
+                    <!-- History Timeline -->
+                    <div class="space-y-6">
+                        <h4
+                            class="text-sm font-black uppercase text-slate-900 tracking-widest flex justify-between items-center">
+                            Historique
+                            <span class="px-2 py-0.5 bg-slate-100 rounded-lg text-[10px] text-slate-400">{{
+                                studentHistory().length }} enregistrement(s)</span>
+                        </h4>
+
+                        <div class="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                            <div *ngFor="let record of studentHistory()"
+                                class="relative pl-6 pb-6 border-l-2 border-slate-100 last:border-l-0">
+                                <!-- Dot -->
+                                <div
+                                    [class]="'absolute -left-[9px] top-0 w-4 h-4 rounded-full border-4 border-white shadow-sm ' + 
+                                    (record.status === 'PRESENT' ? 'bg-emerald-500' : record.status === 'ABSENT' ? 'bg-rose-500' : 'bg-amber-500')">
+                                </div>
+                                <div
+                                    class="bg-slate-50/50 p-4 rounded-2xl border border-slate-50 hover:bg-slate-50 transition-colors">
+                                    <div class="flex justify-between items-start mb-1">
+                                        <p class="font-black text-slate-800 text-sm">{{ record.status }}</p>
+                                        <span class="text-[10px] font-bold text-slate-400 uppercase">{{ record.date |
+                                            date:'dd/MM/yyyy' }}</span>
+                                    </div>
+                                    <p class="text-xs text-slate-500 font-medium">{{ record.subjectName || 'Session de
+                                        cours' }}</p>
+                                    <p *ngIf="record.notes" class="mt-2 text-[10px] text-slate-400 italic">"{{
+                                        record.notes }}"</p>
+                                </div>
+                            </div>
+
+                            <div *ngIf="studentHistory().length === 0"
+                                class="text-center py-10 opacity-30 italic font-bold text-slate-400">
+                                Aucun enregistrement historique trouvé
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

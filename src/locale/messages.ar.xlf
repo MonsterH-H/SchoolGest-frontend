@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="fr" target-language="ar" datatype="plaintext" original="ng2.template">
+    <body>
+      <!-- Navigation -->
+      <trans-unit id="nav.home" datatype="html">
+        <source>Accueil</source>
+        <target>الرئيسية</target>
+      </trans-unit>
+      <trans-unit id="nav.login" datatype="html">
+        <source>Connexion</source>
+        <target>تسجيل الدخول</target>
+      </trans-unit>
+      <trans-unit id="nav.register" datatype="html">
+        <source>Inscription</source>
+        <target>التسجيل</target>
+      </trans-unit>
+      <trans-unit id="nav.dashboard" datatype="html">
+        <source>Tableau de bord</source>
+        <target>لوحة التحكم</target>
+      </trans-unit>
+      <trans-unit id="nav.students" datatype="html">
+        <source>Élèves</source>
+        <target>الطلاب</target>
+      </trans-unit>
+      <trans-unit id="nav.cahier" datatype="html">
+        <source>Cahier de Texte</source>
+        <target>دفتر المادة</target>
+      </trans-unit>
+      <trans-unit id="nav.schedule" datatype="html">
+        <source>Emploi du Temps</source>
+        <target>الجدول الزمني</target>
+      </trans-unit>
+      <trans-unit id="nav.profile" datatype="html">
+        <source>Profil</source>
+        <target>الملف الشخصي</target>
+      </trans-unit>
+      <trans-unit id="nav.logout" datatype="html">
+        <source>Déconnexion</source>
+        <target>تسجيل الخروج</target>
+      </trans-unit>
+
+      <!-- Common buttons -->
+      <trans-unit id="btn.save" datatype="html">
+        <source>Enregistrer</source>
+        <target>حفظ</target>
+      </trans-unit>
+      <trans-unit id="btn.cancel" datatype="html">
+        <source>Annuler</source>
+        <target>إلغاء</target>
+      </trans-unit>
+      <trans-unit id="btn.delete" datatype="html">
+        <source>Supprimer</source>
+        <target>حذف</target>
+      </trans-unit>
+      <trans-unit id="btn.edit" datatype="html">
+        <source>Modifier</source>
+        <target>تعديل</target>
+      </trans-unit>
+      <trans-unit id="btn.add" datatype="html">
+        <source>Ajouter</source>
+        <target>إضافة</target>
+      </trans-unit>
+
+      <!-- Forms -->
+      <trans-unit id="form.email" datatype="html">
+        <source>Email</source>
+        <target>البريد الإلكتروني</target>
+      </trans-unit>
+      <trans-unit id="form.password" datatype="html">
+        <source>Mot de passe</source>
+        <target>كلمة المرور</target>
+      </trans-unit>
+      <trans-unit id="form.firstName" datatype="html">
+        <source>Prénom</source>
+        <target>الاسم الأول</target>
+      </trans-unit>
+      <trans-unit id="form.lastName" datatype="html">
+        <source>Nom</source>
+        <target>الاسم الأخير</target>
+      </trans-unit>
+      <trans-unit id="form.phone" datatype="html">
+        <source>Téléphone</source>
+        <target>الهاتف</target>
+      </trans-unit>
+
+      <!-- Academic -->
+      <trans-unit id="academic.class" datatype="html">
+        <source>Classe</source>
+        <target>القسم</target>
+      </trans-unit>
+      <trans-unit id="academic.subject" datatype="html">
+        <source>Matière</source>
+        <target>المادة</target>
+      </trans-unit>
+      <trans-unit id="academic.teacher" datatype="html">
+        <source>Enseignant</source>
+        <target>المدرس</target>
+      </trans-unit>
+      <trans-unit id="academic.attendance" datatype="html">
+        <source>Présences</source>
+        <target>الغياب</target>
+      </trans-unit>
+      <trans-unit id="academic.evaluations" datatype="html">
+        <source>Évaluations</source>
+        <target>الامتحانات</target>
+      </trans-unit>
+
+      <!-- Messages -->
+      <trans-unit id="msg.success" datatype="html">
+        <source>Succès</source>
+        <target>تم بنجاح</target>
+      </trans-unit>
+      <trans-unit id="msg.error" datatype="html">
+        <source>Erreur</source>
+        <target>خطأ</target>
+      </trans-unit>
+      <trans-unit id="msg.loading" datatype="html">
+        <source>Chargement...</source>
+        <target>جاري التحميل...</target>
+      </trans-unit>
+      <trans-unit id="msg.noData" datatype="html">
+        <source>Aucune donnée disponible</source>
+        <target>لا توجد بيانات</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

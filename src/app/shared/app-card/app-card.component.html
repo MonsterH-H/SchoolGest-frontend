@@ -1,0 +1,48 @@
+<mat-card class="bg-card rounded-lg shadow-md border border-border-color overflow-hidden" [class.cursor-pointer]="clickable" [class.ring-2]="selected" [class.ring-primary]="selected" (click)="onCardClick()">
+  <!-- Header -->
+  <mat-card-header *ngIf="showHeader" class="p-4">
+    <div mat-card-avatar *ngIf="avatar || icon" class="h-10 w-10 rounded-full flex items-center justify-center" [ngClass]="iconColor || 'bg-gray-200'">
+      <img *ngIf="avatar" [src]="avatar" class="h-10 w-10 rounded-full object-cover">
+      <mat-icon *ngIf="icon && !avatar" class="text-white">{{ icon }}</mat-icon>
+    </div>
+    <mat-card-title class="text-text-primary font-semibold">{{ title }}</mat-card-title>
+    <mat-card-subtitle class="text-text-secondary">{{ subtitle }}</mat-card-subtitle>
+    <div class="flex-grow"></div>
+    <!-- Header Actions -->
+    <div class="flex items-center">
+      <button *ngFor="let action of headerActions" mat-icon-button [color]="action.color" (click)="onActionClick(action.action)">
+        <mat-icon>{{ action.icon }}</mat-icon>
+      </button>
+      <button *ngIf="menuItems.length > 0" mat-icon-button [matMenuTriggerFor]="cardMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #cardMenu="matMenu">
+        <button *ngFor="let item of menuItems" mat-menu-item (click)="onActionClick(item.action)">
+          <mat-icon *ngIf="item.icon">{{ item.icon }}</mat-icon>
+          <span>{{ item.label }}</span>
+        </button>
+      </mat-menu>
+    </div>
+  </mat-card-header>
+
+  <!-- Progress Bar -->
+  <mat-progress-bar *ngIf="progress !== undefined" mode="determinate" [value]="progress"></mat-progress-bar>
+
+  <!-- Content -->
+  <mat-card-content class="p-4 text-text-secondary">
+    <ng-content></ng-content>
+  </mat-card-content>
+
+  <!-- Actions -->
+  <mat-card-actions *ngIf="actions.length > 0" class="p-4 flex justify-end gap-2">
+    <button *ngFor="let action of actions" mat-button [color]="action.color" (click)="onActionClick(action.action)">
+      {{ action.label }}
+    </button>
+  </mat-card-actions>
+
+  <!-- Footer -->
+  <div *ngIf="footerText" class="p-4 border-t border-border-color bg-gray-50 text-xs text-text-secondary">
+    {{ footerText }}
+  </div>
+</mat-card>
+

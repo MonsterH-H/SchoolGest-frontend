@@ -1,0 +1,27 @@
+<div class="flex min-h-screen bg-background">
+  <!-- Barre latérale de navigation (Sidebar) -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Fond sombre (backdrop) pour le mode mobile lorsque la sidebar est ouverte -->
+  <div *ngIf="isSidebarOpen && isMobile" (click)="closeSidebar()"
+    class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"></div>
+
+  <!-- Bouton pour ouvrir la sidebar sur mobile -->
+  <button (click)="toggleSidebar()"
+    class="fixed top-4 left-4 z-50 p-1 rounded-md text-gray-500 transition-colors md:hidden">
+    <span class="material-icons">menu</span>
+  </button>
+
+  <!-- Conteneur principal - flex-1 gère automatiquement l'espace restant -->
+  <div class="flex-1 flex flex-col min-h-screen">
+    <!-- Menu utilisateur positionné en haut à droite -->
+    <div class="absolute top-4 right-6 z-40">
+      <app-user-menu></app-user-menu>
+    </div>
+
+    <!-- Zone principale de rendu des composants routés -->
+    <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 pt-20">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

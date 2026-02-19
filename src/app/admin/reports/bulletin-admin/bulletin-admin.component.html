@@ -1,0 +1,88 @@
+<div class="p-6 max-w-4xl mx-auto space-y-8 animate-in fade-in duration-700">
+    <div class="space-y-2">
+        <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Gestion des Bulletins</h1>
+        <p class="text-slate-500">Générez les relevés de notes et calculez les rangs semestriels.</p>
+    </div>
+
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+        <div class="p-8 space-y-8">
+            <!-- Step 1: Selection -->
+            <div class="space-y-4">
+                <label class="flex items-center gap-2 text-sm font-bold text-slate-700 uppercase tracking-wider">
+                    <span
+                        class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs">1</span>
+                    Sélectionner le Semestre
+                </label>
+                <select [(ngModel)]="selectedSemesterId"
+                    class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50 focus:border-indigo-500 focus:bg-white outline-none transition-all text-lg font-medium text-slate-800">
+                    <option [value]="null">Choisir un semestre...</option>
+                    @for (sem of semesters(); track sem.id) {
+                    <option [value]="sem.id">{{ sem.name }} ({{ sem.academicYear }})</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Actions -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                <button (click)="onGenerate()" [disabled]="!selectedSemesterId() || isGenerating()"
+                    class="group relative overflow-hidden p-6 rounded-3xl border-2 border-indigo-100 bg-indigo-50 hover:bg-indigo-600 transition-all duration-300 text-left disabled:opacity-50">
+                    <div class="relative z-10">
+                        <h3 class="text-lg font-bold text-indigo-900 group-hover:text-white transition-colors">Générer
+                            les Bulletins</h3>
+                        <p class="text-sm text-indigo-600 group-hover:text-indigo-100 mt-1 transition-colors">Calcule
+                            les moyennes pour tous les étudiants.</p>
+                    </div>
+                    <div
+                        class="absolute right-4 bottom-4 text-indigo-200 group-hover:text-indigo-400 group-hover:scale-110 transition-all">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 17v-2a4 4 0 014-4h4m-4 4l4-4m-4 4l-4-4m5 6v2a4 4 0 01-4 4H9m4-4l-4 4m4-4l4 4" />
+                        </svg>
+                    </div>
+                </button>
+
+                <button (click)="onCalculateRanks()" [disabled]="!selectedSemesterId() || isGenerating()"
+                    class="group relative overflow-hidden p-6 rounded-3xl border-2 border-emerald-100 bg-emerald-50 hover:bg-emerald-600 transition-all duration-300 text-left disabled:opacity-50">
+                    <div class="relative z-10">
+                        <h3 class="text-lg font-bold text-emerald-900 group-hover:text-white transition-colors">Calculer
+                            les Rangs</h3>
+                        <p class="text-sm text-emerald-600 group-hover:text-emerald-100 mt-1 transition-colors">
+                            Détermine le classement par rapport à la classe.</p>
+                    </div>
+                    <div
+                        class="absolute right-4 bottom-4 text-emerald-200 group-hover:text-emerald-400 group-hover:scale-110 transition-all">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                    </div>
+                </button>
+            </div>
+
+            @if (isGenerating()) {
+            <div class="flex items-center justify-center gap-3 text-indigo-600 font-medium">
+                <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-indigo-600"></div>
+                Traitement en cours, veuillez patienter...
+            </div>
+            }
+        </div>
+
+        <!-- Alert Box -->
+        <div class="p-6 bg-slate-50 border-t border-slate-100">
+            <div class="flex gap-4 items-start">
+                <div class="p-2 bg-amber-100 text-amber-600 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                <div class="space-y-1">
+                    <h4 class="text-sm font-bold text-slate-800">Attention : Opération Définitive</h4>
+                    <p class="text-xs text-slate-500">La génération des bulletins remplace les versions précédentes pour
+                        le semestre sélectionné. Assurez-vous que toutes les notes ont été saisies et validées par les
+                        enseignants.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

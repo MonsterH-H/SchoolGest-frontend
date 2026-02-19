@@ -1,0 +1,15 @@
+<!-- Conteneur principal du spinner -->
+<!-- Applique des classes de carte et d'ombre si 'showCard' est vrai -->
+<div class="flex flex-col justify-center items-center p-4"
+     [ngClass]="{'bg-card': showCard, 'rounded-lg': showCard, 'shadow-lg': showCard, 'w-full': showCard, 'h-full': showCard}"
+     [class]="containerClass">
+  <!-- Composant spinner de Material Design -->
+  <mat-spinner
+    [diameter]="size"
+    [strokeWidth]="strokeWidth"
+    [color]="color"
+  />
+  
+  <!-- Message optionnel affiché sous le spinner -->
+  <p *ngIf="message" class="mt-4 text-text-secondary font-medium">{{ message }}</p>
+</div>

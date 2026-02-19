@@ -1,0 +1,217 @@
+<div class="p-4 md:p-8 space-y-8 animate-in fade-in duration-700 min-h-screen bg-slate-50/30">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Évaluations & Notes</h1>
+            <p class="text-slate-500 mt-1">Saisissez les notes et gérez les performances des étudiants.</p>
+        </div>
+        <div class="flex gap-3" *ngIf="selectedStep() === 2">
+            <button (click)="selectedStep.set(1)"
+                class="px-6 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-2xl font-bold hover:bg-slate-50 transition-all shadow-sm">
+                Retour
+            </button>
+            <button (click)="submitGrades()" [disabled]="isSaving()"
+                class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-2.5 rounded-2xl font-bold shadow-xl shadow-indigo-200 transition-all active:scale-95">
+                <div *ngIf="isSaving()"
+                    class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                Soumettre les Notes
+            </button>
+        </div>
+    </div>
+
+    <!-- Step 1: Configuration -->
+    <div *ngIf="selectedStep() === 1" class="max-w-4xl mx-auto space-y-8 animate-in slide-in-from-top duration-500">
+        <div class="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-2xl shadow-slate-200/60 border border-slate-100">
+            <div class="flex items-center gap-4 mb-10">
+                <div
+                    class="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 font-black text-xl">
+                    1</div>
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Configuration de l'Évaluation</h2>
+                    <p class="text-slate-500 text-sm">Définissez les paramètres avant de passer à la saisie.</p>
+                </div>
+            </div>
+
+            <form [formGroup]="evaluationForm" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Classe cible</label>
+                    <select (change)="onClasseChange(+($any($event.target).value))"
+                        class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-5 py-4 text-slate-700 focus:border-indigo-500 focus:bg-white transition-all outline-none font-medium appearance-none shadow-inner">
+                        <option value="">-- Sélectionner la Classe --</option>
+                        <option *ngFor="let c of classes()" [value]="c.id">{{ c.name }}</option>
+                    </select>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Module
+                        académique</label>
+                    <select (change)="onModuleChange(+($any($event.target).value) || null)"
+                        [disabled]="!selectedClasseId()"
+                        class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-5 py-4 text-slate-700 focus:border-indigo-500 focus:bg-white transition-all outline-none disabled:opacity-50 font-medium shadow-inner">
+                        <option value="">-- Tous les Modules --</option>
+                        <option *ngFor="let m of modules()" [value]="m.id">{{ m.name }}</option>
+                    </select>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Matière</label>
+                    <select (ngModelChange)="selectedSubjectId.set($event != null ? +$event : null)"
+                        [ngModel]="selectedSubjectId()" [ngModelOptions]="{standalone: true}"
+                        class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-5 py-4 text-slate-700 focus:border-indigo-500 focus:bg-white transition-all outline-none font-medium shadow-inner">
+                        <option [ngValue]="null">-- Sélectionner la Matière --</option>
+                        <option *ngFor="let s of subjects()" [value]="s.id">{{ s.name }}</option>
+                    </select>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Type de
+                        contrôle</label>
+                    <select formControlName="type"
+                        class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-5 py-4 text-slate-700 focus:border-indigo-500 focus:bg-white transition-all outline-none font-medium shadow-inner">
+                        <option value="CONTROLE_CONTINU">Contrôle Continu</option>
+                        <option value="EXAMEN_FINAL">Examen Final</option>
+                        <option value="EXAMEN_PARTIEL">Examen Partiel</option>
+                        <option value="DEVOIR">Devoir</option>
+                        <option value="PROJET">Projet / TP</option>
+                        <option value="PARTICIPATION">Participation</option>
+                    </select>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Date de
+                        passage</label>
+                    <input type="date" formControlName="date"
+                        class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-5 py-4 text-slate-700 focus:border-indigo-500 focus:bg-white transition-all outline-none font-medium shadow-inner">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Coeff.</label>
+                        <input type="number" formControlName="coefficient"
+                            class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-5 py-4 text-slate-700 focus:border-indigo-500 focus:bg-white transition-all outline-none font-medium shadow-inner">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Note Max.</label>
+                        <input type="number" formControlName="maxPoint"
+                            class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-5 py-4 text-slate-700 focus:border-indigo-500 focus:bg-white transition-all outline-none font-medium shadow-inner">
+                    </div>
+                </div>
+            </form>
+
+            <div class="mt-12 pt-8 border-t border-slate-50">
+                <button (click)="startGrading()" [disabled]="isLoading() || !selectedSubjectId()"
+                    class="w-full py-5 bg-slate-900 hover:bg-black text-white rounded-3xl font-bold text-lg shadow-2xl shadow-indigo-100 transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-[0.98]">
+                    {{ isLoading() ? 'Initialisation...' : 'Commencer la Saisie des Notes' }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 2: Grading Table -->
+    <div *ngIf="selectedStep() === 2" class="animate-in slide-in-from-right duration-500 space-y-6">
+        <!-- Dashboard info bar -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-indigo-600 text-white p-6 rounded-[2rem] shadow-lg shadow-indigo-100">
+                <p class="text-xs font-bold text-indigo-200 uppercase tracking-widest mb-1">Matière</p>
+                <p class="text-xl font-bold truncate">{{ subjects().at(0)?.name }}</p>
+            </div>
+            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Classe</p>
+                <p class="text-xl font-bold text-slate-800">{{ classes().at(0)?.name }}</p>
+            </div>
+            <div
+                class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Effectif</p>
+                    <p class="text-xl font-bold text-slate-800">{{ students().length }} Étudiants</p>
+                </div>
+                <div class="p-3 bg-indigo-50 text-indigo-600 rounded-2xl">
+                    <i class="material-icons">groups</i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div
+            class="bg-white p-4 rounded-3xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-4 items-center justify-between">
+            <div class="relative w-full md:w-96">
+                <i class="material-icons absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</i>
+                <input type="text" (input)="searchTerm.set($any($event.target).value)"
+                    placeholder="Rechercher un étudiant..."
+                    class="w-full pl-12 pr-6 py-3 bg-slate-50 border-none rounded-2xl text-sm focus:ring-2 focus:ring-indigo-500 transition-all outline-none">
+            </div>
+
+            <div class="flex items-center gap-3">
+                <span class="text-xs font-bold text-slate-400 uppercase mr-2">Action Rapide :</span>
+                <button (click)="fillDefaultGrades(0)"
+                    class="px-4 py-2 text-xs font-bold bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 transition-colors">Tout
+                    à 0</button>
+                <button (click)="fillDefaultGrades(10)"
+                    class="px-4 py-2 text-xs font-bold bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-100 transition-colors">Moyenne
+                    (10)</button>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-900 border-b border-slate-800">
+                            <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-widest">Étudiant
+                            </th>
+                            <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-widest">Matricule
+                            </th>
+                            <th
+                                class="px-8 py-5 text-xs font-black text-indigo-400 uppercase tracking-widest text-center">
+                                Note / {{ evaluationForm.value.maxPoint }}</th>
+                            <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-widest">
+                                Observations</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50">
+                        <tr *ngFor="let student of filteredStudents()"
+                            class="hover:bg-indigo-50/30 transition-colors group">
+                            <td class="px-8 py-6">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">
+                                        {{ student.name.charAt(0) }}
+                                    </div>
+                                    <span class="font-bold text-slate-800 text-lg">{{ student.name }}</span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-6">
+                                <span
+                                    class="px-3 py-1 bg-slate-100 rounded-lg text-xs font-mono font-bold text-slate-500">{{
+                                    student.studentNumber }}</span>
+                            </td>
+                            <td class="px-8 py-6 text-center">
+                                <div class="relative inline-block">
+                                    <input type="number" [value]="gradesMap.get(student.id!)?.score"
+                                        [max]="evaluationForm.value.maxPoint" min="0" step="0.25"
+                                        (input)="updateGrade(student.id!, $any($event.target).value)"
+                                        class="w-28 bg-white border-2 border-slate-100 rounded-2xl px-4 py-3 text-center text-indigo-600 font-black text-xl focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none shadow-sm group-hover:bg-white group-hover:border-indigo-200"
+                                        [ngClass]="{'text-rose-600': (gradesMap.get(student.id!)?.score || 0) < (evaluationForm.value.maxPoint / 2)}">
+                                </div>
+                            </td>
+                            <td class="px-8 py-6">
+                                <input type="text" [value]="gradesMap.get(student.id!)?.feedback"
+                                    (input)="updateFeedback(student.id!, $any($event.target).value)"
+                                    placeholder="Ajouter un commentaire..."
+                                    class="w-full bg-transparent border-b border-transparent hover:border-slate-200 focus:border-indigo-500 px-2 py-2 text-sm text-slate-600 transition-all outline-none italic">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div *ngIf="filteredStudents().length === 0" class="p-20 text-center flex flex-col items-center">
+                <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-4">
+                    <i class="material-icons text-4xl">search_off</i>
+                </div>
+                <p class="text-slate-500 font-medium">Aucun étudiant trouvé pour "{{ searchTerm() }}"</p>
+            </div>
+        </div>
+    </div>
+</div>

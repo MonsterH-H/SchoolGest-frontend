@@ -1,0 +1,113 @@
+<div
+  class="fixed inset-y-0 left-0 z-50 bg-white border-r border-gray-100 flex flex-col shadow-2xl transition-all duration-300 ease-in-out md:static md:shadow-none"
+  [ngClass]="{
+    'w-72': isSidebarOpen,
+    'w-20': !isSidebarOpen,
+    '-translate-x-full': !isSidebarOpen && isMobile,
+    'translate-x-0': isSidebarOpen || !isMobile
+  }">
+  <!-- Header: Logo -->
+  <header class="h-20 flex items-center px-6 border-b border-gray-50 overflow-hidden shrink-0">
+    <div class="flex items-center group cursor-pointer" routerLink="/">
+      <div
+        class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-indigo-200 group-hover:scale-110 transition-transform">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+          </path>
+        </svg>
+      </div>
+      <span *ngIf="isSidebarOpen"
+        class="ml-3 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-700 whitespace-nowrap">
+        SchoolGest
+      </span>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="flex-1 px-4 py-6 overflow-y-auto space-y-1 custom-scrollbar">
+    <ng-container *ngIf="userRole$ | async as role">
+
+      <!-- Role Label -->
+      <p *ngIf="isSidebarOpen"
+        class="px-4 text-[10px] uppercase tracking-wider font-bold text-gray-400 mb-2 mt-4 select-none">
+        Menu {{ role }}
+      </p>
+
+      <!-- Menu Items -->
+      <ng-container [ngSwitch]="role">
+        <!-- ADMIN MENU -->
+        <ng-container *ngSwitchCase="'ADMIN'">
+          <a *ngFor="let link of adminMenu" [routerLink]="link.path"
+            routerLinkActive="bg-indigo-50 text-indigo-600 active-link shadow-sm"
+            class="flex items-center px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-all group mb-1"
+            (click)="closeSidebar()">
+            <svg class="w-5 h-5 transition-colors group-hover:text-indigo-600" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" [attr.d]="link.icon"></path>
+            </svg>
+            <span *ngIf="isSidebarOpen" class="ml-4 font-semibold text-sm">{{ link.title }}</span>
+          </a>
+        </ng-container>
+
+        <!-- ENSEIGNANT MENU -->
+        <ng-container *ngSwitchCase="'ENSEIGNANT'">
+          <a *ngFor="let link of teacherMenu" [routerLink]="link.path"
+            routerLinkActive="bg-emerald-50 text-emerald-600 active-link shadow-sm"
+            class="flex items-center px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-all group mb-1"
+            (click)="closeSidebar()">
+            <svg class="w-5 h-5 transition-colors group-hover:text-emerald-600" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" [attr.d]="link.icon"></path>
+            </svg>
+            <span *ngIf="isSidebarOpen" class="ml-4 font-semibold text-sm">{{ link.title }}</span>
+          </a>
+        </ng-container>
+
+        <!-- ETUDIANT MENU -->
+        <ng-container *ngSwitchCase="'ETUDIANT'">
+          <a *ngFor="let link of studentMenu" [routerLink]="link.path"
+            routerLinkActive="bg-blue-50 text-blue-600 active-link shadow-sm"
+            class="flex items-center px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-all group mb-1"
+            (click)="closeSidebar()">
+            <svg class="w-5 h-5 transition-colors group-hover:text-blue-600" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" [attr.d]="link.icon"></path>
+            </svg>
+            <span *ngIf="isSidebarOpen" class="ml-4 font-semibold text-sm">{{ link.title }}</span>
+          </a>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </nav>
+
+  <!-- Footer: User Profile -->
+  <footer class="p-4 border-t border-gray-50 bg-white shadow-inner">
+    <div *ngIf="currentUser$ | async as user"
+      class="flex items-center p-2 rounded-xl border border-transparent transition-all overflow-hidden"
+      [ngClass]="{'bg-gray-50 border-gray-100': isSidebarOpen}">
+      <div class="relative flex-shrink-0">
+        <div
+          class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold border-2 border-white">
+          {{ (user.firstName ? user.firstName[0] : (user.username ? user.username[0] : '')) | uppercase }}{{
+          (user.lastName ? user.lastName[0] : '') | uppercase }}
+        </div>
+        <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+      </div>
+
+      <div *ngIf="isSidebarOpen" class="ml-3 min-w-0">
+        <p class="text-sm font-bold text-gray-900 truncate">{{ user.firstName }} {{ user.lastName }}</p>
+        <p class="text-[10px] text-gray-500 font-medium truncate uppercase tracking-tighter">{{ user.role }}</p>
+      </div>
+
+      <button *ngIf="isSidebarOpen" (click)="logout()"
+        class="ml-auto p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+        title="Déconnexion">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+        </svg>
+      </button>
+    </div>
+  </footer>
+</div>

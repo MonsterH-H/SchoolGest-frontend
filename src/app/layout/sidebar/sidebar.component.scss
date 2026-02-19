@@ -1,0 +1,14 @@
+/* Styles pour la barre latérale, en utilisant les classes et les couleurs de Tailwind autant que possible */
+
+:host {
+  display: block;
+}
+
+/* Style pour le lien actif, en utilisant les couleurs de la nouvelle palette */
+[routerLinkActive="bg-accent text-white"] {
+
+  .material-icons,
+  span {
+    color: white;
+  }
+}

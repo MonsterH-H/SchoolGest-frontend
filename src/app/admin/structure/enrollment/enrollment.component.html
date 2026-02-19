@@ -1,0 +1,87 @@
+<div class="p-6 max-w-2xl mx-auto space-y-8 animate-in zoom-in duration-500">
+    <div class="text-center space-y-2">
+        <div class="inline-flex p-4 bg-indigo-50 text-indigo-600 rounded-3xl mb-4">
+            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            </svg>
+        </div>
+        <h1 class="text-3xl font-black text-slate-900 tracking-tight">Inscription Pédagogique</h1>
+        <p class="text-slate-500">Affectez un étudiant à une classe pour l'année académique.</p>
+    </div>
+
+    <div class="bg-white rounded-[40px] shadow-2xl border border-slate-50 p-10 space-y-10">
+        <!-- Student Selection -->
+        <div class="space-y-4">
+            <label class="text-xs font-black text-slate-400 uppercase tracking-widest pl-2">1. Sélectionner
+                l'Étudiant</label>
+            <div class="relative">
+                <select [(ngModel)]="selectedStudentId"
+                    class="w-full px-8 py-5 rounded-[28px] bg-slate-50 border-2 border-transparent focus:border-indigo-500 focus:bg-white outline-none transition-all font-bold text-slate-800 appearance-none cursor-pointer">
+                    <option [value]="null">Rechercher un étudiant...</option>
+                    @for (student of students(); track student.id) {
+                    <option [value]="student.id">{{ student.firstName }} {{ student.lastName }} ({{ student.email }})
+                    </option>
+                    }
+                </select>
+                <div class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Class Selection -->
+        <div class="space-y-4">
+            <label class="text-xs font-black text-slate-400 uppercase tracking-widest pl-2">2. Sélectionner la
+                Classe</label>
+            <select [(ngModel)]="selectedClasseId"
+                class="w-full px-8 py-5 rounded-[28px] bg-slate-50 border-2 border-transparent focus:border-indigo-500 focus:bg-white outline-none transition-all font-bold text-slate-800 appearance-none cursor-pointer">
+                <option [value]="null">Choisir une classe cible...</option>
+                @for (cl of classes(); track cl.id) {
+                <option [value]="cl.id">{{ cl.name }} - {{ cl.code }} (Capacité: {{ cl.maxCapacity }})</option>
+                }
+            </select>
+        </div>
+
+        <!-- Submit -->
+        <div class="pt-6">
+            <button (click)="onEnroll()" [disabled]="!selectedStudentId() || !selectedClasseId() || isSubmitting()"
+                class="group relative w-full py-6 bg-indigo-600 text-white rounded-[32px] font-black text-xl hover:bg-indigo-700 transition-all shadow-2xl shadow-indigo-200 disabled:opacity-50 disabled:shadow-none overflow-hidden">
+                <span class="relative z-10 flex items-center justify-center gap-3">
+                    @if (isSubmitting()) {
+                    <svg class="animate-spin h-6 w-6 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                    Traitement...
+                    } @else {
+                    Valider l'Inscription
+                    <svg class="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                    }
+                </span>
+            </button>
+        </div>
+
+        <div class="p-6 bg-indigo-50/50 rounded-3xl border border-indigo-100/50 flex gap-4">
+            <div class="shrink-0 w-10 h-10 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <p class="text-xs text-indigo-700 leading-relaxed font-medium">
+                L'inscription est immédiate. L'étudiant recevra une notification dès que son affectation sera validée
+                dans le système. Son emploi du temps sera automatiquement mis à jour.
+            </p>
+        </div>
+    </div>
+</div>
